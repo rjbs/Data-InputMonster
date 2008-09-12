@@ -1,8 +1,31 @@
 use strict;
 use warnings;
 package Data::InputMonster;
+# ABSTRACT: consume data from multiple sources, best first; om nom nom!
+
+=head1 DESCRIPTION
+
+This module lets you describe a bunch of input fields you expect.  For each
+field, you can specify validation, a default, and multiple places to look for a
+value.  The first valid value found is accepted and returned in the results.
+
+=cut
 
 use Carp ();
+
+=method new
+
+  my $monster = Data::InputMonster->new({
+    fields => {
+      field_name => \%field_spec,
+      ...
+    },
+  });
+
+This builds a new monster.  For more information on the C<%field_spec>
+parameters, see below.
+
+=cut
 
 sub new {
   my ($class, $arg) = @_;
@@ -22,6 +45,16 @@ sub _assert_field_spec_ok {
 
   return 1;
 }
+
+=method consume
+
+  my $result = $monster->consume($input);
+
+This method processes the given input and returns a hashref of the finally
+accepted values.  C<$input> can be anything; it is up to the field definitions
+to expect and handle the data you plan to feed the monster.
+
+=cut
 
 sub consume {
   my ($self, $input) = @_;
@@ -64,5 +97,41 @@ sub consume {
 
   return \%output;
 }
+
+=head1 FIELD DEFINITIONS
+
+Each field is defined by a hashref with the following entries:
+
+  sources - an arrayref of sources; see below; required
+  filter  - a coderef to preprocess candidate values
+  check   - a coderef to validate candidate values
+  store   - a coderef to store accepted values
+  default - a value to use if no source provides an acceptable value
+
+Sources may be given in one of two formats:
+
+  [ source_name => $source, ... ]
+  [ $source_1, $source_2, ... ]
+
+In the second form, sources will be assigned unique names.
+
+The source value is a coderef which, handed the C<$input> argument to the
+C<consume> method, returns a candidate value (or undef).
+
+A filter is a coderef that works by altering C<$_>.
+
+If given, check must be a coderef that inspects C<$_> and returns a true if the
+value is acceptable.
+
+Store is called if a value is accepted.  It is passed the monster and a hashref
+with the following entries:
+
+  value  - the value accepted
+  source - the name of the source from which the value was accepted
+
+If default is given, it must be a simple scalar (in which case that is the
+default) or a coderef that will be called to provide a default value as needed.
+
+=cut
 
 "OM NOM NOM I EAT DATA";
