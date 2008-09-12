@@ -65,4 +65,4 @@ sub consume {
   return \%output;
 }
 
-1;
+"OM NOM NOM I EAT DATA";
