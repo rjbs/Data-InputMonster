@@ -43,7 +43,20 @@ sub new {
 sub _assert_field_spec_ok {
   my ($self, $spec) = @_;
 
-  return 1;
+  Carp::confess("illegal or missing sources")
+    unless $spec->{sources} and ref $spec->{sources} eq 'ARRAY';
+
+  Carp::confess("if given, filter must be a coderef")
+    if $spec->{filter} and ref $spec->{filter} ne 'CODE';
+
+  Carp::confess("if given, check must be a coderef")
+    if $spec->{check} and ref $spec->{check} ne 'CODE';
+
+  Carp::confess("if given, store must be a coderef")
+    if $spec->{store} and ref $spec->{store} ne 'CODE';
+
+  Carp::confess("defaults that are references must be wrapped in code")
+    if ((ref $spec->{default})||'CODE') ne 'CODE';
 }
 
 =method consume

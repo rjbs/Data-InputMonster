@@ -1,8 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More 'no_plan';
-
+use Test::More tests => 3;
 use Data::InputMonster;
 
 sub stash_a {
@@ -25,6 +24,11 @@ sub update_href {
   my ($hash_ref, $field) = @_;
   return sub {
     my ($monster, $arg) = @_;
+
+    return if $arg->{source} eq 'hash';
+
+    Carp::croak("cowardly refusing to overwrite existing entry")
+      if exists $hash_ref->{$field};
 
     $hash_ref->{ $field } = $arg->{value};
   };
@@ -82,10 +86,30 @@ my $monster = Data::InputMonster->new({
       per_page => 99,
       search   => "trim_me",
     },
+    "we got the correct values from a first round of input"
   );
 
   is_deeply(
     \%stored_data,
     { per_page => 99, },
+    "...and the stored parameter was stored",
+  );
+}
+
+{
+  my $input = {
+    a => { },
+  };
+
+  my $result = $monster->consume($input);
+
+  is_deeply(
+    $result,
+    {
+      page     => 1,
+      per_page => 99,
+      search   => undef,
+    },
+    "on the second round, the stored value is used and not re-stored",
   );
 }
