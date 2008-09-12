@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 3;
+use Test::More tests => 5;
 use Data::InputMonster;
 
 sub stash_a {
@@ -111,5 +111,41 @@ my $monster = Data::InputMonster->new({
       search   => undef,
     },
     "on the second round, the stored value is used and not re-stored",
+  );
+}
+
+{
+  my $input = {
+    a => { },
+  };
+
+  my $result = $monster->consume($input, { no_default_for => [ qw(page) ] });
+
+  is_deeply(
+    $result,
+    {
+      page     => undef,
+      per_page => 99,
+      search   => undef,
+    },
+    "skipped page default with [qw(page)]",
+  );
+}
+
+{
+  my $input = {
+    a => { },
+  };
+
+  my $result = $monster->consume($input, { no_default_for => 'page' });
+
+  is_deeply(
+    $result,
+    {
+      page     => undef,
+      per_page => 99,
+      search   => undef,
+    },
+    "skipped page default with 'page'",
   );
 }

@@ -61,16 +61,27 @@ sub _assert_field_spec_ok {
 
 =method consume
 
-  my $result = $monster->consume($input);
+  my $result = $monster->consume($input, \%arg);
 
 This method processes the given input and returns a hashref of the finally
 accepted values.  C<$input> can be anything; it is up to the field definitions
 to expect and handle the data you plan to feed the monster.
 
+Valid arguments are:
+
+  no_default_for - a field name or arrayref of field names for which to NOT
+                   fall back to default values
+
 =cut
 
 sub consume {
-  my ($self, $input) = @_;
+  my ($self, $input, $arg) = @_;
+  $arg ||= {};
+
+  my %no_default_for
+    = (! $arg->{no_default_for})   ? ()
+    : (ref $arg->{no_default_for}) ? (map {$_=>1} @{$arg->{no_default_for}})
+    : ($arg->{no_default_for} => 1);
 
   my $field  = $self->{fields};
   my %output;
@@ -104,7 +115,7 @@ sub consume {
       next FIELD;
     }
 
-    my $default = $spec->{default};
+    my $default = $no_default_for{ $field_name } ? undef : $spec->{default};
     $output{ $field_name } = ref $default ? $default->() : $default;
   }
 
