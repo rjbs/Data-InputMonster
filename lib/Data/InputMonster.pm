@@ -109,7 +109,14 @@ sub consume {
       
       $output{ $field_name } = $value;
       if ($storer) {
-        $storer->($self, { source => $name, value => $value });
+        $storer->(
+          $self,
+          {
+            input  => $input,
+            source => $name,
+            value  => $value,
+          },
+        );
       }
 
       next FIELD;
@@ -152,6 +159,7 @@ with the following entries:
 
   value  - the value accepted
   source - the name of the source from which the value was accepted
+  input  - the input given to the consume method
 
 If default is given, it must be a simple scalar (in which case that is the
 default) or a coderef that will be called to provide a default value as needed.

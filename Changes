@@ -1,4 +1,14 @@
 Revision history for Data-InputMonster
 
+0.004     2008-09-17
+          pass input to store callbacks
+
+0.003     2008-09-12
+          add no_default_for option to consume
+
+0.002     2008-09-12
+          add ::Util
+          improve tests
+
 0.001     2008-09-11
           first release
