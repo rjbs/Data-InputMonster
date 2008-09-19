@@ -100,9 +100,11 @@ sub consume {
       @sources = map { ("source_" . $i++) => $_ } @sources;
     }
 
+    my $input_arg = { field_name => $field_name };
+
     SOURCE: for (my $i = 0; $i < @sources; $i += 2) {
       my ($name, $getter) = @sources[ $i, $i + 1 ];
-      my $value = $getter->($self, $input);
+      my $value = $getter->($self, $input, $input_arg);
       next unless defined $value;
       if ($filter)  { $filter->()  for $value; }
       if ($checker) { $checker->() or next SOURCE for $value; }
@@ -147,7 +149,8 @@ Sources may be given in one of two formats:
 In the second form, sources will be assigned unique names.
 
 The source value is a coderef which, handed the C<$input> argument to the
-C<consume> method, returns a candidate value (or undef).
+C<consume> method, returns a candidate value (or undef).  It is also handed a
+hashref of relevant information, most importantly C<field_name>.
 
 A filter is a coderef that works by altering C<$_>.
 

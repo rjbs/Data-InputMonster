@@ -1,5 +1,8 @@
 Revision history for Data-InputMonster
 
+0.005     2008-09-19
+          pass hashref of data (field_name) to sourcers
+
 0.004     2008-09-17
           pass input to store callbacks
 

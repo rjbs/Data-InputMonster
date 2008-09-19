@@ -7,7 +7,7 @@ use Data::InputMonster;
 sub stash_a {
   my ($entry) = @_;
   return sub {
-    my ($monster, $input, $field) = @_;
+    my ($monster, $input) = @_;
     return $input->{a}->{ $entry };
   };
 }
@@ -15,7 +15,8 @@ sub stash_a {
 sub stash_b {
   my ($entry) = @_;
   return sub {
-    my ($monster, $input, $field) = @_;
+    my ($monster, $input, $arg) = @_;
+    my $entry = defined $entry ? $entry : $arg->{field_name};
     return $input->{b}->{ $entry };
   };
 }
@@ -51,7 +52,7 @@ my $monster = Data::InputMonster->new({
       default  => 10,
       sources  => [
         alpha => stash_a('per_page'),
-        bravo => stash_b('per_page'),
+        bravo => stash_b, # this will default to looking up by field name
         hash  => check_hash('per_page'),
       ],
     },
