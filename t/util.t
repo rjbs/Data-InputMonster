@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 4;
+use Test::More tests => 5;
 use Data::InputMonster::Util qw(dig);
 
 {
@@ -33,3 +33,7 @@ use Data::InputMonster::Util qw(dig);
   );
 }
 
+{
+  my $input  = [ qw(alfa bravo charlie) ];
+  is(dig(2)->(undef, $input), 'charlie', "plain scalar dig locator");
+}

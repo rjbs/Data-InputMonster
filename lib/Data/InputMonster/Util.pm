@@ -24,7 +24,8 @@ exported as routines upon request.
 
 A C<dig> source looks through the input using the given locator.  If it's a
 coderef, the code is called and passed the input.  If it's an arrayref, each
-entry is used, in turn, to subscript the input as a deep data structure.
+entry is used, in turn, to subscript the input as a deep data structure.  If
+it's a plain scalar, it's treated like a one-element arrayref would have been.
 
 For example, given:
 
@@ -38,8 +39,9 @@ The source would find 13.
 sub dig {
   my ($self, $locator) = @_;
   
-  Carp::confess("locator must be either a code or array reference")
-    unless ref $locator;
+  Carp::confess("no locator given") unless defined $locator;
+
+  $locator = [ $locator ] unless ref $locator;
 
   if (ref $locator eq 'CODE') {
     return sub { $locator->($_[1]) };
