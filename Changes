@@ -1,6 +1,6 @@
 Revision history for Data-InputMonster
 
-0.006     2008-09-19
+0.007     2008-09-19
           allow dig to accept a non-ref arg
 
 0.005     2008-09-19
