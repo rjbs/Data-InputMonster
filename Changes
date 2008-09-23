@@ -1,5 +1,8 @@
 Revision history for Data-InputMonster
 
+0.008     2008-09-23
+          pass field name to store callbacks
+
 0.007     2008-09-19
           allow dig to accept a non-ref arg
 
