@@ -1,5 +1,8 @@
 Revision history for Data-InputMonster
 
+{{$NEXT}}
+          update bugtracker, repackage
+
 0.008     2008-09-23
           pass field name to store callbacks
 
