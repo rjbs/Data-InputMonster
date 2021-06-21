@@ -1,6 +1,8 @@
 Revision history for Data-InputMonster
 
 {{$NEXT}}
+        - update author contact info
+        - mark as no longer supported by the author
 
 0.010     2013-12-13 08:26:13 America/New_York
           fix bugtracker and repo metadata
